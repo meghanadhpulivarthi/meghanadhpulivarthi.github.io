@@ -1,0 +1,30 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "HangingRabbit's Blog"
+  description: "Learnings from building language models from scratch."
+  site-url: https://meghanadhpulivarthi.github.io
+  search: true
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: blog.qmd
+        text: Blog
+      - href: about.qmd
+        text: About
+    right:
+      - icon: rss
+        href: blog.xml
+  page-footer:
+    center: "© 2026 Meghanadh Pulivarthi"
+
+format:
+  html:
+    theme:
+      light: litera
+      dark: darkly
+    css: styles.css
+    toc: false

@@ -1,0 +1,14 @@
+---
+title: "About"
+---
+
+I'm Meghanadh Pulivarthi. I work on machine learning — inference pipelines, agentic
+systems, and empirical experiments.
+
+This site collects what I learn as I work through [CS336](https://stanford-cs336.github.io/),
+Stanford's *Language Modeling from Scratch*. The course is deliberately
+implementation-heavy: you build the tokenizer, the attention, the optimizer, and the
+training loop yourself, with very little scaffolding. Writing the explanations down is
+how I check my own understanding.
+
+Posts here explain concepts. They are not assignment solutions.
