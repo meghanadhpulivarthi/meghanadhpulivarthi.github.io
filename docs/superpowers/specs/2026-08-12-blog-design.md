@@ -164,6 +164,7 @@ The site is done when, from a clean clone:
 4. The BPE post renders its byline, a working table of contents, rendered LaTeX, a
    syntax-highlighted code block, and a figure captioned `Figure 1. …`.
 5. The dark/light toggle switches both site chrome and post body.
-6. `/index.xml` is a valid feed containing the post.
+6. `/blog.xml` is a valid feed containing the post. (Quarto names a listing's feed after
+   its page, so the archive on `blog.qmd` yields `blog.xml`, not `index.xml`.)
 7. `./publish.sh`, run from a different working directory, publishes successfully and
    the post is reachable at `meghanadhpulivarthi.github.io`.
