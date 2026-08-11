@@ -1,0 +1,80 @@
+---
+title: "What BPE actually merges"
+date: 2026-08-12
+categories: ["CS336 Note"]
+description: "Byte-pair encoding is usually described as merging the most frequent pair. Two details do most of the work: pretokenization decides which pairs are even visible, and ties have to be broken deterministically."
+---
+
+Byte-pair encoding gets described in one line: repeatedly merge the most frequent
+adjacent pair of tokens. That line is true and it hides the two details that determine
+what your vocabulary actually looks like.
+
+## Pretokenization decides what is adjacent
+
+BPE never sees your corpus as one long string. The text is first split into
+pretokens — roughly words, with leading whitespace attached — and merges are only ever
+counted *within* a pretoken, never across a boundary.
+
+This is a modeling decision disguised as an implementation detail. If pairs could merge
+across boundaries, nothing stops a single token from spanning `the` and the space and
+`cat`, and common phrases would collapse into single tokens. The boundary is what
+guarantees tokens stay word-shaped.
+
+So the frequency count is not over the corpus. It is over pairs inside pretokens,
+weighted by how often each pretoken occurs. A pretoken appearing 40,000 times
+contributes 40,000 to each of its internal pairs, which is why the merge order is
+dominated by high-frequency function words early on.
+
+```{mermaid}
+%%| label: fig-boundaries
+%%| fig-cap: "Pairs are counted inside pretokens only. The dashed edge is never a candidate."
+flowchart LR
+  subgraph P1["pretoken: ' the'"]
+    A["' t'"] --- B["'h'"] --- C["'e'"]
+  end
+  subgraph P2["pretoken: ' cat'"]
+    D["' c'"] --- E["'a'"] --- F["'t'"]
+  end
+  C -.- D
+```
+
+## Ties are common, and the tie-break is part of the spec
+
+Early in training, the counts are enormous and distinct. Later, once the frequent
+structure is used up, many pairs sit at the same low count — often at 1. With a vocabulary
+of tens of thousands of merges, ties are not an edge case, they are most of the tail.
+
+An arbitrary tie-break makes training non-reproducible: the same corpus yields a
+different vocabulary on each run, and a tokenizer that disagrees with the one your
+checkpoint was trained under is silently broken. So the rule has to be deterministic, and
+it is chosen rather than discovered:
+
+```python
+best_pair = max(byte_pairs.items(), key=lambda x: (x[1], x[0]))[0]
+```
+
+The key is a tuple, so Python compares count first and only falls through to the pair
+itself when counts are equal. Because these are `bytes` tuples, that fallthrough is a
+lexicographic comparison, and `max` takes the *greatest* pair. Nothing about the data
+prefers the lexicographically larger pair — it is simply a rule both the trainer and any
+reimplementation can agree on.
+
+Formally, with $c(p)$ the count of pair $p$:
+
+$$
+p^\star = \operatorname*{arg\,max}_{p} \; \big( c(p),\, p \big)
+$$
+
+where the maximum is over the lexicographic order on the tuple. Write it that way and the
+tie-break stops looking like a detail and starts looking like what it is: part of the
+definition of the algorithm.
+
+## What I took from this
+
+The one-line description of BPE is a description of the *loop*, not of the algorithm. The
+vocabulary you get is determined about as much by where you drew the pretoken boundaries
+and how you ordered equal counts as by the merge rule everyone quotes.
+
+---
+
+[More CS336 notes →](/blog.html)
