@@ -37,7 +37,9 @@ figcaption,
     margin-top: 2.5rem;
     margin-bottom: 0.75rem;
     padding-bottom: 0.3rem;
-    border-bottom: 1px solid var(--bs-border-color);
+    /* Derived, not var(--bs-border-color): that variable is #dee2e6 in BOTH themes,
+       which reads as a glaring near-white line against darkly's #222 background. */
+    border-bottom: 1px solid color-mix(in srgb, var(--bs-body-color) 25%, var(--bs-body-bg));
 }
 
 .archive-row {
