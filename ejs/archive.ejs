@@ -14,8 +14,11 @@
 <% /* Display the string as-is and take the year from that same string, which also makes  */ %>
 <% /* it impossible for the heading year to disagree with the date shown in the row.      */ %>
 <% const dateText = item.date ? String(item.date) : ""; %>
-<% /* First 4-digit run is the year in every date-format Quarto emits (MMM D, YYYY /      */ %>
-<% /* YYYY-MM-DD / M/D/YYYY) — neither the day nor the month is ever 4 digits.            */ %>
+<% /* First 4-digit run is the year in every format with a four-digit year (MMM D, YYYY / */ %>
+<% /* YYYY-MM-DD / M/D/YYYY) — neither the day nor the month is ever 4 digits. A format   */ %>
+<% /* without one (date-format: "short" gives "8/12/26") matches nothing, collapsing      */ %>
+<% /* every post under a single "Undated" heading — so blog.qmd must declare a format     */ %>
+<% /* that carries a four-digit year.                                                     */ %>
 <% const yearMatch = dateText.match(/\d{4}/); %>
 <% const year = yearMatch ? yearMatch[0] : "Undated"; %>
 <% if (year !== currentYear) { %><% if (currentYear !== null) { %></div>

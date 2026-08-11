@@ -10,6 +10,10 @@ listing:
   contents: posts/**/*.qmd
   template: ejs/archive.ejs
   sort: "date desc"
+  # ejs/archive.ejs pulls the year heading out of this already-formatted string with
+  # a four-digit match, so the format must contain a four-digit year. Listing items do
+  # not inherit date-format from posts/_metadata.yml, so it has to be declared here.
+  date-format: "MMM D, YYYY"
   page-size: 0
   feed: true
 ---

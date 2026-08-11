@@ -89,8 +89,10 @@ and the archive both pick up new posts with no changes, since they glob `posts/*
 
 **`_quarto.yml`** — `project: type: website`. Nav is Home, Blog, About, nothing more.
 Paired light/dark themes plus `styles.css`, which gives the theme toggle for free.
-Native Quarto search enabled. Post-level defaults set here: `toc: true` with
-`toc-depth: 2` (CS336 explanations run long, unlike his short notes), and
+Native Quarto search enabled. Site-wide `toc: false`, since the top-level pages are
+short. Post-level defaults live in `posts/_metadata.yml` rather than here, so they
+apply to posts only: `toc: true` with `toc-depth: 2` (CS336 explanations run long,
+unlike his short notes), `date-format: "MMM D, YYYY"`, and
 `author: Meghanadh Pulivarthi` so no post has to repeat it.
 
 **`ejs/archive.ejs`** — the one piece of real templating. Quarto's stock listings do not

@@ -18,7 +18,10 @@ Nothing publishes automatically. A draft on `main` stays a draft until you run
 
 1. Create `posts/<project>/`.
 2. Copy `blog.qmd` to `<project>.qmd`, changing `contents:` to `posts/<project>/**/*.qmd`.
-3. Add a navbar entry in `_quarto.yml`.
+3. Change `title:` in the copy — otherwise the new page renders titled "Blog".
+   Leave the copied `date-format: "MMM D, YYYY"` alone: the archive template reads the
+   year heading out of that formatted string.
+4. Add a navbar entry in `_quarto.yml`.
 
 The homepage and archive glob `posts/**` and pick up new projects with no changes.
 

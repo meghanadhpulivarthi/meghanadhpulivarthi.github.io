@@ -22,7 +22,7 @@ website:
       - icon: rss
         href: blog.xml
   page-footer:
-    center: "© 2026 Meghanadh Pulivarthi"
+    center: "© Meghanadh Pulivarthi"
 
 format:
   html:
