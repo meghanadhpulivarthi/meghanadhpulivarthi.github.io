@@ -1,5 +1,13 @@
 ---
 title: "HangingRabbit's Blog"
+listing:
+  id: recent-posts
+  contents: posts/**/*.qmd
+  type: default
+  sort: "date desc"
+  max-items: 5
+  fields: [date, title, description]
+  date-format: "MMM D, YYYY"
 ---
 
 I'm working through Stanford's CS336, *Language Modeling from Scratch* — building
@@ -7,3 +15,10 @@ tokenizers, transformers, optimizers, and training loops from the ground up.
 
 These are my notes. I write them because explaining a thing is how I find out whether I
 actually understood it. If a post reads clearly, that's the point of it.
+
+## Recent
+
+::: {#recent-posts}
+:::
+
+[Full archive →](/blog.html)
