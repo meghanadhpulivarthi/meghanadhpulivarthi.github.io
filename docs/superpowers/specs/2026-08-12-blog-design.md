@@ -94,9 +94,18 @@ Native Quarto search enabled. Post-level defaults set here: `toc: true` with
 `author: Meghanadh Pulivarthi` so no post has to repeat it.
 
 **`ejs/archive.ejs`** — the one piece of real templating. Quarto's stock listings do not
-group by year, so this template sorts items by date descending, opens a new `<h2>` when
+group by year, so this template walks the already-sorted items, opens a new `<h2>` when
 the year changes, and emits one row per post: date, first category, linked title,
-description. Roughly 25 lines.
+description.
+
+Two non-obvious requirements, both established by probing the rendered output rather than
+by reasoning about it. First, `item.date` arrives as a string Quarto has *already*
+formatted (`"Aug 12, 2026"`), not as a date-only ISO string — so the template must never
+call `new Date()` on it. Re-parsing yields local midnight, and any subsequent UTC
+conversion shifts the displayed date back a day. The year is taken from the same string
+via `match(/\d{4}/)`, which also guarantees the heading can never disagree with the dates
+beneath it. Second, the template body must sit inside a ` ```{=html} ` raw block, or
+Pandoc treats the indented HTML as markdown and turns it into code blocks.
 
 **`blog.qmd`** — a listing page, about six lines of front matter: `contents: posts/**`,
 `template: ejs/archive.ejs`, `feed: true` for RSS.
