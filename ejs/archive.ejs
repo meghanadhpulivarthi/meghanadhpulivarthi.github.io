@@ -1,0 +1,32 @@
+<% /* Emitted as a Pandoc raw-HTML block so Pandoc passes it through byte-for-byte.       */ %>
+<% /* Without the fence, Pandoc parses this HTML as markdown: indented lines become code  */ %>
+<% /* blocks and the year <h2> gets reflowed onto separate lines. Quarto still rewrites   */ %>
+<% /* the .qmd href in item.path to .html inside a raw block, so links stay correct.      */ %>
+```{=html}
+<% /* items arrives already sorted by the listing's sort key (date desc), so walking it   */ %>
+<% /* in order and opening a new heading when the year changes yields grouped output.     */ %>
+<% let currentYear = null; %>
+<% for (const item of items) { %>
+<% /* item.date is NOT a raw date-only string — Quarto has already formatted it using     */ %>
+<% /* date-format (MMM D, YYYY), e.g. "Aug 12, 2026". Re-parsing it with new Date() reads */ %>
+<% /* it as LOCAL midnight, so a later UTC conversion shifts it back a day                */ %>
+<% /* ("Aug 11, 2026") and files a Jan 1 post under the previous year. So: never reparse. */ %>
+<% /* Display the string as-is and take the year from that same string, which also makes  */ %>
+<% /* it impossible for the heading year to disagree with the date shown in the row.      */ %>
+<% const dateText = item.date ? String(item.date) : ""; %>
+<% /* First 4-digit run is the year in every date-format Quarto emits (MMM D, YYYY /      */ %>
+<% /* YYYY-MM-DD / M/D/YYYY) — neither the day nor the month is ever 4 digits.            */ %>
+<% const yearMatch = dateText.match(/\d{4}/); %>
+<% const year = yearMatch ? yearMatch[0] : "Undated"; %>
+<% if (year !== currentYear) { %><% if (currentYear !== null) { %></div>
+<% } %><% currentYear = year; %><h2 class="archive-year"><%= year %></h2>
+<div class="archive-year-group">
+<% } %><div class="archive-row">
+<span class="archive-date"><%= dateText %></span>
+<span class="archive-category"><%= (item.categories && item.categories[0]) || "" %></span>
+<a class="archive-title" href="<%= item.path %>"><%= item.title %></a>
+<div class="archive-description"><%= item.description || "" %></div>
+</div>
+<% } %><% /* close the final year group */ %><% if (currentYear !== null) { %></div>
+<% } %>
+```

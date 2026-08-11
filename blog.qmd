@@ -1,0 +1,18 @@
+---
+title: "Blog"
+
+# Year headings are not linkable sections, so suppress Quarto's hover anchor links.
+# This also keeps the emitted class attribute exactly "archive-year".
+anchor-sections: false
+
+listing:
+  id: archive
+  contents: posts/**/*.qmd
+  template: ejs/archive.ejs
+  sort: "date desc"
+  page-size: 0
+  feed: true
+---
+
+::: {#archive}
+:::
