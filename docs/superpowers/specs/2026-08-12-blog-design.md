@@ -125,8 +125,10 @@ crossrefs work:
 ![Byte pairs merged in frequency order.](images/merges.png){#fig-merges}
 ```
 
-Quarto renders this as `Figure 1. Byte pairs merged in frequency order.` below the
-image, matching the reference site's convention without hand-numbering.
+Quarto numbers and captions this automatically, but its default delimiter is a colon
+(`Figure 1: caption`). Matching the reference site's period requires
+`crossref: {title-delim: ". "}` in `_quarto.yml` — with the trailing space, since a bare
+`"."` is rewritten as a relative path by Quarto's HTML post-processor.
 
 **`publish.sh`** — `set -euo pipefail`, `cd` to the script's own directory so it runs
 from any working directory, echo before each step, then `quarto render` followed by
