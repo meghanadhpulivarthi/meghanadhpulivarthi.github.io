@@ -1,0 +1,58 @@
+[
+  {
+    "objectID": "posts/cs336/2026-08-12-what-bpe-merges/index.html",
+    "href": "posts/cs336/2026-08-12-what-bpe-merges/index.html",
+    "title": "What BPE actually merges",
+    "section": "",
+    "text": "Byte-pair encoding gets described in one line: repeatedly merge the most frequent adjacent pair of tokens. That line is true and it hides the two details that determine what your vocabulary actually looks like."
+  },
+  {
+    "objectID": "posts/cs336/2026-08-12-what-bpe-merges/index.html#pretokenization-decides-what-is-adjacent",
+    "href": "posts/cs336/2026-08-12-what-bpe-merges/index.html#pretokenization-decides-what-is-adjacent",
+    "title": "What BPE actually merges",
+    "section": "Pretokenization decides what is adjacent",
+    "text": "Pretokenization decides what is adjacent\nBPE never sees your corpus as one long string. The text is first split into pretokens — roughly words, with leading whitespace attached — and merges are only ever counted within a pretoken, never across a boundary.\nThis is a modeling decision disguised as an implementation detail. If pairs could merge across boundaries, nothing stops a single token from spanning the and the space and cat, and common phrases would collapse into single tokens. The boundary is what guarantees tokens stay word-shaped.\nSo the frequency count is not over the corpus. It is over pairs inside pretokens, weighted by how often each pretoken occurs. A pretoken appearing 40,000 times contributes 40,000 to each of its internal pairs, which is why the merge order is dominated by high-frequency function words early on.\n\n\n\n\n\n\nflowchart LR\n  subgraph P1[\"pretoken: ' the'\"]\n    A[\"' t'\"] --- B[\"'h'\"] --- C[\"'e'\"]\n  end\n  subgraph P2[\"pretoken: ' cat'\"]\n    D[\"' c'\"] --- E[\"'a'\"] --- F[\"'t'\"]\n  end\n  C -.- D\n\n\n\n\nFigure 1. Pairs are counted inside pretokens only. The dashed edge is never a candidate."
+  },
+  {
+    "objectID": "posts/cs336/2026-08-12-what-bpe-merges/index.html#ties-are-common-and-the-tie-break-is-part-of-the-spec",
+    "href": "posts/cs336/2026-08-12-what-bpe-merges/index.html#ties-are-common-and-the-tie-break-is-part-of-the-spec",
+    "title": "What BPE actually merges",
+    "section": "Ties are common, and the tie-break is part of the spec",
+    "text": "Ties are common, and the tie-break is part of the spec\nEarly in training, the counts are enormous and distinct. Later, once the frequent structure is used up, many pairs sit at the same low count — often at 1. With a vocabulary of tens of thousands of merges, ties are not an edge case, they are most of the tail.\nAn arbitrary tie-break makes training non-reproducible: the same corpus yields a different vocabulary on each run, and a tokenizer that disagrees with the one your checkpoint was trained under is silently broken. So the rule has to be deterministic, and it is chosen rather than discovered:\nbest_pair = max(byte_pairs.items(), key=lambda x: (x[1], x[0]))[0]\nThe key is a tuple, so Python compares count first and only falls through to the pair itself when counts are equal. Because these are bytes tuples, that fallthrough is a lexicographic comparison, and max takes the greatest pair. Nothing about the data prefers the lexicographically larger pair — it is simply a rule both the trainer and any reimplementation can agree on.\nFormally, with \\(c(p)\\) the count of pair \\(p\\):\n\\[\np^\\star = \\operatorname*{arg\\,max}_{p} \\; \\big( c(p),\\, p \\big)\n\\]\nwhere the maximum is over the lexicographic order on the tuple. Write it that way and the tie-break stops looking like a detail and starts looking like what it is: part of the definition of the algorithm."
+  },
+  {
+    "objectID": "posts/cs336/2026-08-12-what-bpe-merges/index.html#what-i-took-from-this",
+    "href": "posts/cs336/2026-08-12-what-bpe-merges/index.html#what-i-took-from-this",
+    "title": "What BPE actually merges",
+    "section": "What I took from this",
+    "text": "What I took from this\nThe one-line description of BPE is a description of the loop, not of the algorithm. The vocabulary you get is determined about as much by where you drew the pretoken boundaries and how you ordered equal counts as by the merge rule everyone quotes.\n\nMore CS336 notes →"
+  },
+  {
+    "objectID": "blog.html",
+    "href": "blog.html",
+    "title": "Blog",
+    "section": "",
+    "text": "2026\n\n\nAug 12, 2026\nCS336 Note\nWhat BPE actually merges\nByte-pair encoding is usually described as merging the most frequent pair. Two details do most of the work: pretokenization decides which pairs are even visible, and ties have to be broken deterministically.\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "I’m Meghanadh Pulivarthi. I work on machine learning — inference pipelines, agentic systems, and empirical experiments.\nThis site collects what I learn as I work through CS336, Stanford’s Language Modeling from Scratch. The course is deliberately implementation-heavy: you build the tokenizer, the attention, the optimizer, and the training loop yourself, with very little scaffolding. Writing the explanations down is how I check my own understanding.\nPosts here explain concepts. They are not assignment solutions."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "HangingRabbit’s Blog",
+    "section": "",
+    "text": "I’m working through Stanford’s CS336, Language Modeling from Scratch — building tokenizers, transformers, optimizers, and training loops from the ground up.\nThese are my notes. I write them because explaining a thing is how I find out whether I actually understood it. If a post reads clearly, that’s the point of it."
+  },
+  {
+    "objectID": "index.html#recent",
+    "href": "index.html#recent",
+    "title": "HangingRabbit’s Blog",
+    "section": "Recent",
+    "text": "Recent\n\n\n\n\n\nWhat BPE actually merges\n\n\nByte-pair encoding is usually described as merging the most frequent pair. Two details do most of the work: pretokenization decides which pairs are even visible, and ties have to be broken deterministically.\n\n\n\n\n\nAug 12, 2026\n\n\n\n\n\nNo matching items\n\nFull archive →"
+  }
+]
